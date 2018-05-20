@@ -22,7 +22,8 @@ public class Jimu {
 	static ChromeDriverService service = null;
 	static ChromeDriver driver = null;
 
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+
+	public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException {
 		String loginURL = "https://www.jimu.com/User/Login";
 		p.load(new FileReader("config.txt"));
 		initDriver();
@@ -31,6 +32,7 @@ public class Jimu {
 		driver.get(loginURL);
 		driver.findElementById("username").sendKeys(username);
 		driver.findElementById("password").sendKeys(password);
+		Thread.sleep(1000 * 10);
 		driver.findElementById("act_login").submit();
 		String method=p.getProperty("method");
 		String amount=p.getProperty("amount");
@@ -56,13 +58,13 @@ public class Jimu {
 			while (true) {
 				driver.get(creditAssignURL);
 
-				tds = driver.findElementsByPartialLinkText("债权转让项目");
+				tds = driver.findElementsByPartialLinkText("10.5");
 
 				if (!tds.isEmpty()) {
-
+					
 					Collections.shuffle(tds);
 					for (WebElement td : tds) {
-						if ("10.5".equals(td.getText().split("\n")[4])) {
+						//System.out.println(td.getText());
 							try {
 								driver.get(td.getAttribute("href"));
 								driver.findElementById("act_project_all_in").click();
@@ -73,16 +75,16 @@ public class Jimu {
 								driver.findElementById("act_invest_confirm").click();
 
 							} catch (Exception e) {
-								e.printStackTrace();
+								System.out.println(e.getMessage());
 							}
-						}
+						
 					}
 					Toolkit.getDefaultToolkit().beep();
 				}
 
 				System.out.println(count++);
 				// 5 min
-				Thread.sleep(1000 * 5 * 1);
+				Thread.sleep(1000 * 5);
 			}
 
 		} catch (Exception e) {

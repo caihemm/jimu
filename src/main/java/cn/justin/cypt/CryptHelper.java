@@ -20,8 +20,8 @@ public  class CryptHelper {
 
 	 public static void main(String[] args) throws FileNotFoundException, IOException {  
 	        // 密钥的种子，可以是任何形式，本质是字节数组  
-	                String strKey = "username";  
-	                String clearPwd = "password";  
+	                String strKey = args[0];  
+	                String clearPwd = args[1];  
 	                // 密钥数据  
 	                byte[] rawKey = getRawKey(strKey.getBytes());  
 	                // 密码的明文  
