@@ -1,4 +1,7 @@
-headless = false
-chromedriver = C:\\Program Files (x86)\\Google\\Chrome\\Application\\chromedriver.exe
-username = 
-password = 
+#Sun May 20 13:08:48 CST 2018
+password=
+amount=3000
+headless=false
+method=prior
+username=
+chromedriver=C\:\\Program Files (x86)\\Google\\Chrome\\Application\\chromedriver.exe

@@ -1,9 +1,13 @@
 package cn.justin.cypt;
 
-import java.io.UnsupportedEncodingException;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Properties;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -14,10 +18,10 @@ import javax.crypto.spec.SecretKeySpec;
 
 public  class CryptHelper {
 
-	 public static void main(String[] args) throws UnsupportedEncodingException {  
+	 public static void main(String[] args) throws FileNotFoundException, IOException {  
 	        // 密钥的种子，可以是任何形式，本质是字节数组  
-	                String strKey = "xxx";  
-	                String clearPwd = "xxxx";  
+	                String strKey = "username";  
+	                String clearPwd = "password";  
 	                // 密钥数据  
 	                byte[] rawKey = getRawKey(strKey.getBytes());  
 	                // 密码的明文  
@@ -30,6 +34,12 @@ public  class CryptHelper {
 	                String decryptedPwd = decrypt(encryptedData, strKey);  
 	                
 	                System.out.println(decryptedPwd);  
+	                Properties user = new Properties();
+	                String file="config.txt";
+	                user.load(new FileReader(file));
+	                user.setProperty("username", strKey);
+	                user.setProperty("password", encryptedData);
+	                user.store(new FileWriter(file), null);
 	  
 	    }  
 	  

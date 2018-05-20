@@ -38,7 +38,7 @@
             <minimizeJar>true</minimizeJar>
                <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>cn.justin.jimu.CreditAssign</mainClass>
+                  <mainClass>cn.justin.jimu.Jimu</mainClass>
                 </transformer>
               </transformers>
             </configuration>

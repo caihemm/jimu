@@ -16,31 +16,42 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import cn.justin.cypt.CryptHelper;
 
-public class CreditAssign {
+public class Jimu {
 	static Properties p = new Properties();
 
 	static ChromeDriverService service = null;
 	static ChromeDriver driver = null;
 
-
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-
 		String loginURL = "https://www.jimu.com/User/Login";
+		p.load(new FileReader("config.txt"));
+		initDriver();
+		String username = p.getProperty("username");
+		String password = CryptHelper.decrypt(p.getProperty("password"), username);
+		driver.get(loginURL);
+		driver.findElementById("username").sendKeys(username);
+		driver.findElementById("password").sendKeys(password);
+		driver.findElementById("act_login").submit();
+		String method=p.getProperty("method");
+		String amount=p.getProperty("amount");
+
+		switch(method){
+		case "assign":
+			creditAssign();break;
+		case "prior":
+			priorInvest(amount);break;
+			
+		}
+
+	}
+	public static void creditAssign() throws FileNotFoundException, IOException {
+
 		String creditAssignURL = "https://box.jimu.com/CreditAssign/List?rate=10&orderIndex=1";
 
 		try {
-			p.load(new FileReader("config.txt"));
-			initDriver();
-			 String username = p.getProperty("username");
-			 String password = CryptHelper.decrypt(p.getProperty("password"),
-			 username);
-			 driver.get(loginURL);
-			 driver.findElementById("username").sendKeys(username);
-			 driver.findElementById("password").sendKeys(password);
-			 driver.findElementById("act_login").submit();
+
 			int count = 0;
 			List<WebElement> tds = null;
-
 
 			while (true) {
 				driver.get(creditAssignURL);
@@ -56,6 +67,60 @@ public class CreditAssign {
 								driver.get(td.getAttribute("href"));
 								driver.findElementById("act_project_all_in").click();
 								driver.findElementById("act_project_invest").click();
+
+								Thread.sleep(100);
+								driver.findElementById("Contract").click();
+								driver.findElementById("act_invest_confirm").click();
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					Toolkit.getDefaultToolkit().beep();
+				}
+
+				System.out.println(count++);
+				// 5 min
+				Thread.sleep(1000 * 5 * 1);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (service != null)
+				service.stop();
+		}
+
+	}
+
+
+	public static void priorInvest(String amount) throws FileNotFoundException, IOException {
+
+		String priorInvestURL = "https://box.jimu.com/Project/List";
+
+		try {
+
+			int count = 0;
+			List<WebElement> tds = null;
+
+			while (true) {
+				driver.get(priorInvestURL);
+
+				tds = driver.findElementsByPartialLinkText("开标");
+
+				if (!tds.isEmpty()) {
+
+					Collections.shuffle(tds);
+					for (WebElement td : tds) {
+
+						if ("10.5%".equals(td.getText().split("\n")[6])) {
+
+							try {
+								driver.get(td.getAttribute("href"));
+								//driver.findElementByName("investAmount").sendKeys(amount);
+								driver.findElementByLinkText("[全投]").click();;
+								driver.findElementByTagName("button").submit();
 
 								Thread.sleep(100);
 								driver.findElementById("Contract").click();
